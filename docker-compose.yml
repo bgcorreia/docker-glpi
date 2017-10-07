@@ -38,6 +38,6 @@ services:
       - ./struct/volumes/mysql:/var/lib/mysql:rw
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=1
-      - MYSQL_DATABASE=${SERVICE}
+      - MYSQL_DATABASE=${DATABASE}
       - MYSQL_USER=${DBUSER}
       - MYSQL_PASSWORD=${DBPASS}
