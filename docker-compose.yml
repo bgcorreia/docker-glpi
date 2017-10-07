@@ -8,21 +8,25 @@ services:
       - "443:443"
     restart: always
     volumes:
-      - ./struct/volumes/glpi:/var/www/html
-      - ./struct/files/nginx/app.vhost:/etc/nginx/conf.d/default.conf
-      - ./struct/files/nginx/dhparam.pem:/etc/ssl/certs/dhparam.pem
-      - /etc/letsencrypt/live/glpi.lassarie.com/fullchain.pem:/etc/ssl/certs/fullchain.pem
-      - /etc/letsencrypt/live/glpi.lassarie.com/privkey.pem:/etc/ssl/certs/privkey.pem
+      - ./struct/volumes/${SERVICE}:${DOCUMENT_ROOT}:rw
+      - ./struct/files/nginx/app.template:/tmp/default.template:ro
+      - ./struct/files/nginx/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
+      - /etc/letsencrypt/live/${FQDN}/fullchain.pem:/etc/ssl/certs/fullchain.pem:ro
+      - /etc/letsencrypt/live/${FQDN}/privkey.pem:/etc/ssl/certs/privkey.pem:ro
+    environment:
+      - FQDN=${FQDN}
+      - DOCUMENT_ROOT=${DOCUMENT_ROOT}
     depends_on:
       - php
       - db
+    command: /bin/bash -c "envsubst '$${FQDN} $${DOCUMENT_ROOT}' < /tmp/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
 
   php:
     build: ./struct/build/php
     container_name: php
     restart: always
     volumes:
-      - ./struct/volumes/glpi:/var/www/html
+      - ./struct/volumes/${SERVICE}:${DOCUMENT_ROOT}:ro
     depends_on:
       - db
 
@@ -31,9 +35,9 @@ services:
     container_name: mariadb
     restart: always
     volumes:
-      - ./struct/volumes/mysql:/var/lib/mysql
+      - ./struct/volumes/mysql:/var/lib/mysql:rw
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=1
-      - MYSQL_DATABASE=glpi
-      - MYSQL_USER=glpi
-      - MYSQL_PASSWORD=glpi@pass
+      - MYSQL_DATABASE=${SERVICE}
+      - MYSQL_USER=${DBUSER}
+      - MYSQL_PASSWORD=${DBPASS}
