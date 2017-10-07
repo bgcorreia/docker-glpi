@@ -18,7 +18,7 @@ services:
       - db
 
   php:
-    build: ./build/php
+    build: ./struct/build/php
     container_name: php
     restart: always
     volumes:
@@ -32,3 +32,8 @@ services:
     restart: always
     volumes:
       - ./volumes/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=1
+      - MYSQL_DATABASE=glpi
+      - MYSQL_USER=glpi
+      - MYSQL_PASSWORD=glpi@pass
