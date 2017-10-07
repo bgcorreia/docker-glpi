@@ -9,7 +9,7 @@ services:
     restart: always
     volumes:
       - ./struct/volumes/glpi:/var/www/html
-      - ./struct/files/nginx/app.vhost:/etc/nginx/conf.d/default
+      - ./struct/files/nginx/app.vhost:/etc/nginx/conf.d/default.conf
       - ./struct/files/nginx/dhparam.pem:/etc/ssl/certs/dhparam.pem
       - /etc/letsencrypt/live/glpi.lassarie.com/fullchain.pem:/etc/ssl/certs/fullchain.pem
       - /etc/letsencrypt/live/glpi.lassarie.com/privkey.pem:/etc/ssl/certs/privkey.pem
@@ -31,7 +31,7 @@ services:
     container_name: mariadb
     restart: always
     volumes:
-      - ./volumes/mysql:/var/lib/mysql
+      - ./struct/volumes/mysql:/var/lib/mysql
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=1
       - MYSQL_DATABASE=glpi
