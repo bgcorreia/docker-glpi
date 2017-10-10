@@ -12,13 +12,18 @@ server {
         root ${DOCUMENT_ROOT};
         index index.php index.html index.htm;
         
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
         location ~ \.php$ {
                 root ${DOCUMENT_ROOT};
-                #fastcgi_pass php-handler;
+		try_files $uri =404;
                 fastcgi_pass php:9000;
                 fastcgi_index index.php;
                 fastcgi_param SCRIPT_FILENAME ${DOCUMENT_ROOT}$fastcgi_script_name;
                 include fastcgi_params;
+		fastcgi_read_timeout 300;
         }
 
 	ssl_certificate /etc/ssl/certs/fullchain.pem;

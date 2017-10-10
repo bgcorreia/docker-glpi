@@ -26,7 +26,8 @@ services:
     container_name: php
     restart: always
     volumes:
-      - ./struct/volumes/${SERVICE}:${DOCUMENT_ROOT}:ro
+      - ./struct/files/php/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./struct/volumes/${SERVICE}:${DOCUMENT_ROOT}:rw
     depends_on:
       - db
 

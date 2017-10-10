@@ -1,4 +1,4 @@
-FROM php:7.0-fpm
+FROM php:7.1-fpm
 
 MAINTAINER Bruno Correia <brunogomescorreia@gmail.com>
 
@@ -6,6 +6,7 @@ MAINTAINER Bruno Correia <brunogomescorreia@gmail.com>
 
 # ATUALIZAR REPOSITÓRIOS
 RUN apt update
+RUN apt upgrade -y
 
 # LDAP
 RUN apt install -y libldap2-dev
@@ -34,4 +35,7 @@ RUN docker-php-ext-install mysqli
 # GD
 RUN apt install -y libfreetype6-dev libjpeg62-turbo-dev libpng12-dev
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ 
-RUN docker-php-ext-install gd
+RUN docker-php-ext-install -j$(nproc) gd
+
+# SOAP
+RUN docker-php-ext-install soap
